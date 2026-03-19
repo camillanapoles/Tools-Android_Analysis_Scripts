@@ -92,12 +92,6 @@ forensic_20260128_145213/
 └── forensic_storage_sensitive.txt
 ```
 
-> **Security:** Output files contain sensitive device data (credentials, keys, device identifiers). Treat as confidential, store encrypted, and delete after analysis.
-
----
-
-### Output Map
-
 ```
                           ┌──────────────────────────────────────────────────┐
                           │                 DEVICE BASELINE                  │
@@ -149,6 +143,9 @@ forensic_20260128_145213/
                           └─────────────────────────────────────────┘
 ```
 
+> **Security:** Output files contain sensitive device data (credentials, keys, device identifiers). Treat as confidential, store encrypted, and delete after analysis.
+
+---
 
 ## Risk Levels
 
