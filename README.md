@@ -96,6 +96,60 @@ forensic_20260128_145213/
 
 ---
 
+### Output Map
+
+```
+                          ┌──────────────────────────────────────────────────┐
+                          │                 DEVICE BASELINE                  │
+                          │             audit_usb_adb.txt                    │
+                          │           audit_properties.txt                   │
+                          │         vendor_customizations.txt                │
+                          │       enum_privileged_processes.txt              │
+                          │         audit_debug_interfaces.txt               │
+                          └──────────────────────┬───────────────────────────┘
+                                                 │
+  ┌──────────────────────────┐                   │                  ┌───────────────────────────┐
+  │     ROOT & INTEGRITY     │                   │                  │       HARDWARE & TEE      │
+  │   root_indicators.txt    │                   │                  │   probe_tee_surface.txt   │
+  │    audit_selinux.txt     │      ┌────────────┴─────────┐        │  audit_hardware_          │
+  │  audit_partitions.txt    │      │  forensic_YYYYMMDD_  │        │    interfaces.txt         │
+  │     audit_boot.txt       │      │      HHMMSS/         │        └───────────────────────────┘
+  │  audit_android_jail.txt  │      │  ─────────────────   │
+  └──────────────────────────┘      │      master.log      │        ┌───────────────────────────┐
+                                    │  forensic_context.txt│        │        NETWORK & IPC      │
+  ┌──────────────────────────┐      │    manifest.txt      │        │   network_interfaces.txt  │
+  │   KERNEL & OS SECURITY   │      └────────────┬─────────┘        │        netstat.txt        │
+  │    audit_kernel.txt      │                   │                  │   audit_network_deep.txt  │
+  │  audit_capabilities.txt  │                   │                  │     audit_binder.txt      │
+  │   probe_namespaces.txt   │                   │                  │   audit_unix_sockets.txt  │
+  │ audit_privesc_surface.txt│                   │                  │       pipes_ipc.txt       │
+  └──────────────────────────┘                   │                  │  audit_content_           │
+                                                 │                  │    providers.txt          │
+  ┌──────────────────────────┐                   │                  └───────────────────────────┘
+  │     UID · GID · PERMS    │                   │
+  │  ── uncommon depth ──    │                   │                  ┌───────────────────────────┐
+  │      users_uids.txt      │                   │                  │    APP SURFACE & SECRETS  │
+  │     audit_setuid.txt     │                   │                  │   audit_app_attack_       │
+  │  audit_special_perms.txt │                   │                  │     surface.txt           │
+  │      device_nodes.txt    │                   │                  │   broadcast_receivers.txt │
+  │  audit_writable_         │                   │                  │  audit_crypto_surface.txt │
+  │     system.txt           │                   │                  │   scan_certificate_       │
+  └──────────────────────────┘                   │                  │     files.txt             │
+                                                 │                  │   scan_hardcoded_         │
+                          ┌──────────────────────┴──────────────────┤     secrets.txt           │
+                          │          FORENSIC COLLECTION            │└───────────────────────────┘
+                          │          forensic_logs.txt              │
+                          │   forensic_process_snapshot.txt         │
+                          │   forensic_storage_sensitive.txt        │
+                          │       application_hashes.txt            │
+                          │         shell_commands.txt              │
+                          │             symlinks.txt                │
+                          │          input_devices.txt              │
+                          │       audit_scheduled_tasks.txt         │
+                          └─────────────────────────────────────────┘
+```
+
+
 ## Risk Levels
 
 Findings in output files are tagged:
