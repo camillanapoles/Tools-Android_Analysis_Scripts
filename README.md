@@ -1,15 +1,16 @@
 # Android Analysis Scripts
 
-A collection of 41 POSIX shell scripts for forensic data collection and security auditing on Android devices. Scripts run directly on-device via ADB shell or a terminal emulator — no build step, no dependencies beyond standard Android utilities.
+ This is my personal collection of shell scripts for forensic data collection and security auditing on Android devices. They are subject to change at any time and are updated intermittently as I use them on new or differing devices. 
+ 
+The Scripts run directly on-device via ADB shell or a terminal emulator — no build step, no dependencies beyond standard Android utilities. These are purposely designed to be "dumb" and run with minimal issues across *any* busybox or shell solution that is fully featured to heavily restricted. They also (should) fail gracefully any time a command is not available, out of scope for user permissions, etc. 
 
-> **Legal Notice:** Use only on devices you own or have explicit written authorization to test. Unauthorized use may violate computer fraud laws.
+> **Legal Notice:** I'm not responsible for anything stupid you do with these. This is a personal toolset for my professional needs I have opted to share with others.  Use responsibly and consult your local laws. 
 
 ---
 
 ## Requirements
 
-- Android device or emulator (API 26 / Android 8.0+)
-- ADB (Android Debug Bridge) for host-based execution
+- A delivery method (adb upload, toss on SD Card, etc)
 - Root access optional — scripts degrade gracefully and log permission denials
 
 ---
@@ -265,7 +266,6 @@ Findings in output files are tagged:
 ```
 Toolchain/
 ├── 0_RunAll.sh                        # Orchestrator — runs scripts 01–41 in sequence
-├── 99_Zip_Reports.sh                  # Archives output (zip → tar.gz → tar fallback)
 ├── 01_audit_usb_adb.sh
 ├── 02_audit_properties.sh
 ├── 03_audit_partitions.sh
@@ -307,6 +307,7 @@ Toolchain/
 ├── 39_collect_logs.sh
 ├── 40_forensic_process_snapshot.sh
 └── 41_forensic_storage_sensitive.sh
+├── 99_Zip_Reports.sh                  # Archives output (zip → tar.gz → tar fallback)
 ```
 
 ---
