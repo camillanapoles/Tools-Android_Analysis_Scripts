@@ -1,0 +1,33 @@
+# CD — Entrega por tag semver (v*): empacota e publica Release verificado
+name: CD — Entrega por Tag
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Empacotar + Publicar Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Guardar produto
+        run: |
+          mkdir -p dist
+          zip -qr "dist/produto-${GITHUB_REF_NAME}.zip" . -x '*__pycache__*' '*.git*' '*dist*'
+          ls -la dist/
+      - name: Publicar Release (somente em tags v*)
+        if: startsWith(github.ref_name, 'v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/*.zip \
+            --title "Release ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            --verify-tag \
+          || gh release upload "$GITHUB_REF_NAME" dist/*.zip --clobber
