@@ -1,0 +1,65 @@
+# CI — Gates determinísticos por branch (fail-closed)
+# Checks required de main = os `name:` dos jobs abaixo (ver AGENTS.md §4)
+name: CI — Gates por Branch
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  sintaxe-bash:
+    name: Sintaxe Bash (bash -n)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Todo .sh trackeado parseia
+        run: |
+          fail=0
+          for f in $(git ls-files '*.sh'); do
+            bash -n "$f" || { echo "ERRO DE SINTAXE: $f"; fail=1; }
+          done
+          [ "$fail" -eq 0 ] && echo "OK: sintaxe válida em todos os scripts"
+          exit $fail
+
+  shellcheck:
+    name: ShellCheck erros
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      # SC1087/SC1128 = débito D-1 (TODO.md). Ao sanar, remova o --exclude.
+      - name: Nível error (exclui débitos D-1)
+        run: |
+          shellcheck --exclude=SC1087,SC1128 -S error $(git ls-files '*.sh')
+          echo "OK: nenhum erro shellcheck (fora débitos D-1)"
+
+  workflows-yaml:
+    name: Workflows YAML validos
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Todo workflow parseia
+        run: |
+          pip install -q pyyaml
+          python - <<'EOF'
+          import glob, sys, yaml
+          files = sorted(glob.glob('.github/workflows/*.yml'))
+          assert files, "nenhum workflow encontrado"
+          for f in files:
+              yaml.safe_load(open(f))
+              print(f"OK: {f}")
+          EOF
